@@ -23,35 +23,43 @@ module.exports.signIn = function(req,res){
 }
 
 
-// get the sign up data
-module.exports.create = (req,res) => {
+// creating user for sign-up as well as check if the user is already present or not
+module.exports.create = async (req, res) => {
+    // check the password and confirm password is same or not
     if(req.body.password != req.body.confirm_password){
+        console.log("Password and Confirm Password must be equal");
         return res.redirect('back');
     }
+    try{
 
-    User.findOne({email:req.body.email},async function(err,user){
-        if(err){
-            console.log("Error in finding user in signing up");
-            return;
-        }
-
-        if(!user){
-            let newUser  = await User.create(req.body);
-            
-            User.create(req.body,function(err,user){
-                if(err){
-                    console.log("Error in creating user while signing up");
-                    return;
-                }
-                return res.redirect('/users/sign-in');
-            });
+        // check the usre is already present or not. If present then redirect to the same page
+        let user = await User.findOne({email:req.body.email});
+        if(user){
+            console.log("User already present in DB");
+            res.redirect('back');
         }
         else{
-            return res.redirect('back');
-        }
 
-    });
-}
+            // Otherwise insert into the database and redirect to sign in page
+            const data = {
+                name: req.body.name,
+                email: req.body.email,
+                password: req.body.password
+            }
+            await User.insertMany([data])
+            res.redirect('/users/sign-in');
+        }
+    
+    }
+    // if gets any error show it in the console
+    catch(err){
+        console.log("Error in finding user in signing up");
+        return;
+    }
+    
+
+    
+};
 
 // sign in and create a session for user
 module.exports.createSession = function(req,res){
