@@ -1,10 +1,29 @@
 const User = require("../models/user");
 
 
-module.exports.profile = function(req,res){
-    return res.render('user_profile',{
-        title:"User Profile"
-    });
+module.exports.profile = async(req,res)=>{
+
+    // return res.render('user_profile',{
+    //     title:"User Profile"
+    // })
+    try {
+        if(req.cookies.user_id){
+            let user = await User.findOne({_id : req.cookies.user_id});
+            if(user){
+                return res.render('user_profile',{
+                    title:"User Profile",
+                    user:user
+                });
+            }
+
+            // return res.redirect('/users/sign-in');
+        }
+        else{
+            return res.redirect('/users/sign-in');
+        }
+    } catch (error) {
+        console.log("Getting error after sign-in before profile view ",error);
+    }    
 }
 
 // render sign up page
@@ -79,6 +98,7 @@ module.exports.createSession = async (req,res) => {
             }
             
             res.cookie('user_id',user.id);
+            // console.log(res);
             return res.redirect('/users/profile')
         }
         else{
