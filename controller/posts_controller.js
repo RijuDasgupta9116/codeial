@@ -2,7 +2,7 @@ const Post = require('../models/post');
 
 module.exports.create = async (req,res) =>{
     try {
-        let post = Post.create({
+        let post = await Post.create({
             content: req.body.content,
             user: req.user._id
         })
@@ -18,15 +18,3 @@ module.exports.create = async (req,res) =>{
     
 }
 
-// module.exports.create = function(req,res){
-//     Post.create({
-//         content: req.body.content,
-//         user: req.user._id
-//     }, function(err,post){
-//         if(err){
-//             console.log("Error in creating a post");
-//             return ;
-//         }
-//         return res.redirect('back');
-//     })
-// }
