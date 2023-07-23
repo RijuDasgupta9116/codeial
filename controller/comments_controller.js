@@ -23,19 +23,19 @@ module.exports.create = async (req,res)=>{
 }
 
 
-// try{
-//     let comment = await Comment.create({
-//         content: req.body.content,
-//         user: req.user._id,
-//         post: req.post._id
-//     })
-
-//     if(!comment){
-//         console.log("Error in creating a comment");
-//         return ;
-//     }
-//     return res.redirect('back');
-// }
-// catch(error){
-//     console.log("Error in creating Comment",error);
-// }
+module.exports.destroy = async (req,res)=>{
+    try {
+        let comment = await Comment.findById(req.params.id);
+        if(comment.user == req.user.id){
+            let postId = comment.post;
+            comment.deleteOne({id: req.params.id});
+            await Post.findByIdAndUpdate(postId,{$pull: {comments: req.param.id}});
+            return res.redirect('back');
+        }
+        else{
+            return res.redirect('back');
+        }
+    } catch (error) {
+        console.log("Error in deleting comment ",error);
+    }
+}

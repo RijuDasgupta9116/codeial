@@ -18,16 +18,20 @@ module.exports.create = async (req,res) =>{
     
 }
 
-module.exports.destroy = async function(req,res){
+module.exports.destroy = async (req,res)=>{
     try {
         let post = await Post.findById(req.params.id);
         // .id means converting the object id into string
         if(post.user == req.user.id){
-            post.remove();
+            post.deleteOne({id: req.params.id});
             let comment = await Comment.deleteMany({post: req.params.id})
+            return res.redirect('back');
+        }
+        else{
+            return res.redirect('back');
         }
     } catch (error) {
-        
+        console.log("Error in deleting the post ",error);
     }
 
 }
