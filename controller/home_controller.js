@@ -1,4 +1,5 @@
 const Post = require("../models/post");
+const User = require('../models/user');
 
 module.exports.home = async function(req, res){
     // console.log(req.cookies);
@@ -9,10 +10,19 @@ module.exports.home = async function(req, res){
                 path: 'user'
             }
         }).exec();
-        return res.render('home',{
-            title:"Codeial | Home",
-            posts: posts
-        });
+
+        try {
+            let users = await User.find({});
+            return res.render('home',{
+                title:"Codeial | Home",
+                posts: posts,
+                all_users: users
+            });
+        } catch (error) {
+            console.log(error);
+        }
+
+        
         
     } catch (error) {
        console.log("Error in finding post",error); 
