@@ -7,19 +7,19 @@ module.exports.create = async (req,res) =>{
             user: req.user._id
         })
 
-        if(req.xhr){
-            return res.status(200).json({
-                data: {
-                    post: post
-                },
-                message: "Post created!"
-            })
-        }
-    
-        // if(!post){
-        //     console.log("Error in creating a post");
-        //     return ;
+        // if(req.xhr){
+        //     return res.status(200).json({
+        //         data: {
+        //             post: post
+        //         },
+        //         message: "Post created!"
+        //     })
         // }
+    
+        if(!post){
+            console.log("Error in creating a post");
+            return ;
+        }
         req.flash('success','Post published!');
         return res.redirect('back');
     } catch (error) {
@@ -38,15 +38,15 @@ module.exports.destroy = async (req,res)=>{
             post.deleteOne({id: req.params.id});
             let comment = await Comment.deleteMany({post: req.params.id})
             
-            if(req.xhr){
-                return res.status(200).json({
-                    data: {
-                        post_id: req.params.id
-                    },
-                    message: "Post deleted!"
-                })
-            }
-            
+            // if(req.xhr){
+            //     return res.status(200).json({
+            //         data: {
+            //             post_id: req.params.id
+            //         },
+            //         message: "Post deleted!"
+            //     })
+            // }
+            req.flash('success','Post and associated comments deleted!')
             return res.redirect('back');
         }
         else{

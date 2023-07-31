@@ -13,7 +13,7 @@
     </p>
     <div class="post-comments">
         <%if(locals.user){%>
-            <form action="/comments/create" method="POST">
+            <form id="new-comment-form" action="/comments/create" method="POST">
                 <input type="text" name="content" placeholder="Type here to add comment...">
                 <input type="hidden" name="post" value="<%= post._id %>">
                 <input type="submit" value="Add Comment">
@@ -24,9 +24,9 @@
             <ul id="post-comments-<%= post._id%>">
                 <%for(comment of post.comments){%>
 
-                    <li>
+                    
                         <%- include('_comment') -%>
-                    </li>
+                    
 
                     
                 <%}%>
@@ -37,3 +37,5 @@
     </div>
     
 </li>
+
+<!-- <script src="/js/home_comments.js"></script> -->
