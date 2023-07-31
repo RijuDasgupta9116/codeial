@@ -4,25 +4,27 @@ const User = require('../models/user');
 
 // authentication using passport
 passport.use(new LocalStrategy({
-    usernameField : 'email'
+    usernameField : 'email',
+    passReqToCallback: true
     },
-    async function(email, password, done){
+    async function(req, email, password, done){
         try {
             let user = await User.findOne({email:email});
             if(!user || user.password != password){
-                console.log("Invalid Username/ Password");
+                req.flash('error','Invalid Username or Password');
                 return done(null, false);
             }
 
             return done(null,user);
         } catch (error) {
             console.log("Error in finding user --> passport");
+            req.flash('error',error);
             return done(err);
         }
     }
 ))
 
-// Serializing the user to decide which key is to be kept in the cookiesf
+// Serializing the user to decide which key is to be kept in the cookies
 passport.serializeUser(function(user,done){
     done(null,user.id);
 })
